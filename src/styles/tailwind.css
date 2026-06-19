@@ -10,4 +10,33 @@
 
 @theme {
 	--font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+	--color-cream: #fbf7f0;
+	--color-sand: #f1e8d8;
+	--color-ink: #1c1a17;
+	--color-muted: #6b6358;
+
+	--color-maple: #e0492a;
+	--color-maple-dark: #c23a1f;
+	--color-loon: #0e7c86;
+	--color-loon-dark: #0a5e66;
+	--color-gold: #e8b22a;
+
+	--radius-card: 1.25rem;
+}
+
+@layer base {
+	body {
+		background-color: var(--color-cream);
+		color: var(--color-ink);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.001ms !important;
+		transition-duration: 0.001ms !important;
+	}
 }

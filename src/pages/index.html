@@ -3,10 +3,120 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>✦✦✦</title>
+	<title>Loonie — Pocket money, onchain</title>
+	<meta name="description" content="The onchain pocket-money app for Canadian families. Give your kid a monthly allowance on Solana — funds stay in your wallet until they spend.">
+	<link rel="icon" href="/favicon.ico">
 	<link href="/css/output.css" rel="stylesheet" />
 </head>
-<body class="bg-[#0e0e0e] text-gray-200 font-sans h-screen w-screen overflow-hidden flex flex-col">	
+<body class="font-sans min-h-screen flex flex-col antialiased">
+
+	<header class="sticky top-0 z-30 backdrop-blur-md bg-cream/80 border-b border-sand">
+		<div class="mx-auto max-w-6xl px-5 h-16 flex items-center justify-between gap-4">
+			<a href="/" class="flex items-center gap-2 font-bold text-lg tracking-tight">
+				<span class="text-2xl">🍁</span>
+				<span>Loonie</span>
+			</a>
+
+			<nav class="hidden sm:flex items-center p-1 rounded-full bg-sand/70 text-sm font-medium" role="tablist" aria-label="View">
+				<button data-role="parent" class="role-tab px-4 py-1.5 rounded-full transition-colors" role="tab">Parent</button>
+				<button data-role="kid" class="role-tab px-4 py-1.5 rounded-full transition-colors" role="tab">Kid</button>
+				<button data-role="store" class="role-tab px-4 py-1.5 rounded-full transition-colors" role="tab">Store</button>
+			</nav>
+
+			<div class="relative">
+				<button data-connect class="rounded-full bg-loon hover:bg-loon-dark text-white font-semibold px-4 py-2 text-sm transition-colors">
+					Connect wallet
+				</button>
+				<button data-wallet hidden class="rounded-full bg-white border border-sand px-3 py-2 text-sm font-semibold flex items-center gap-2">
+					<span class="w-2 h-2 rounded-full bg-loon"></span>
+					<span data-wallet-address>—</span>
+					<span class="text-muted font-normal" data-wallet-balance></span>
+				</button>
+				<div data-wallet-menu hidden class="absolute right-0 mt-2 w-60 rounded-2xl bg-white border border-sand shadow-xl p-2 text-sm"></div>
+			</div>
+		</div>
+	</header>
+
+	<main class="flex-1 mx-auto w-full max-w-6xl px-5 py-10">
+
+		<section class="mb-10 rounded-card bg-white border border-sand p-7 sm:p-9" data-reveal>
+			<p class="text-maple font-semibold text-sm mb-2">Pocket money, onchain</p>
+			<h1 class="text-3xl sm:text-4xl font-bold leading-tight max-w-2xl">
+				Give your kid an allowance — without ever giving up your money.
+			</h1>
+			<p class="mt-4 text-muted max-w-2xl leading-relaxed">
+				You set the terms. The funds stay in <span class="font-semibold text-ink">your</span> wallet
+				the whole time. Your kid can only pull up to their cap each month, and you can revoke it anytime.
+				No custody, no locked funds, no third party holding the cash.
+			</p>
+			<div class="mt-5 flex flex-wrap gap-2 text-xs font-medium">
+				<span class="px-3 py-1 rounded-full bg-sand">Funds stay in your wallet</span>
+				<span class="px-3 py-1 rounded-full bg-sand">Resets every cycle</span>
+				<span class="px-3 py-1 rounded-full bg-sand">Revocable anytime</span>
+				<span class="px-3 py-1 rounded-full bg-gold/20 text-maple-dark">🍁 Built in Canada · devnet</span>
+			</div>
+		</section>
+
+		<section data-panel="parent" class="space-y-6">
+			<div class="flex items-end justify-between gap-4" data-reveal>
+				<div>
+					<h2 class="text-2xl font-bold">Parent dashboard</h2>
+					<p class="text-muted mt-1">Set up allowances and watch them — your balance never leaves your wallet.</p>
+				</div>
+			</div>
+			<div class="rounded-card border border-dashed border-sand bg-white/60 p-8 text-center text-muted" data-reveal>
+				Connect your wallet to set up the mock-USDC allowance authority and add your first kid.
+				<div class="text-xs mt-2 opacity-70">Coming in the next build step (P1 · onboarding).</div>
+			</div>
+		</section>
+
+		<section data-panel="kid" hidden class="space-y-6">
+			<div data-reveal>
+				<h2 class="text-2xl font-bold">My allowance</h2>
+				<p class="text-muted mt-1">See what you've got this month and spend it at the store.</p>
+			</div>
+			<div class="rounded-card border border-dashed border-sand bg-white/60 p-8 text-center text-muted" data-reveal>
+				Connect the kid wallet to see this month's allowance.
+				<div class="text-xs mt-2 opacity-70">Coming in P4 · kid view.</div>
+			</div>
+		</section>
+
+		<section data-panel="store" hidden class="space-y-6">
+			<div data-reveal>
+				<h2 class="text-2xl font-bold">Demo store</h2>
+				<p class="text-muted mt-1">A few Canadian classics for the allowance to be spent at.</p>
+			</div>
+			<div class="grid sm:grid-cols-3 gap-4">
+				<div class="rounded-card bg-white border border-sand p-6" data-reveal>
+					<div class="text-3xl mb-3">☕</div>
+					<div class="font-semibold">Timmies</div>
+					<div class="text-muted text-sm">Double-double &amp; a Timbit</div>
+				</div>
+				<div class="rounded-card bg-white border border-sand p-6" data-reveal>
+					<div class="text-3xl mb-3">📚</div>
+					<div class="font-semibold">Indigo</div>
+					<div class="text-muted text-sm">A book for the weekend</div>
+				</div>
+				<div class="rounded-card bg-white border border-sand p-6" data-reveal>
+					<div class="text-3xl mb-3">🏪</div>
+					<div class="font-semibold">Corner Store</div>
+					<div class="text-muted text-sm">Snacks after school</div>
+				</div>
+			</div>
+			<div class="text-xs text-muted opacity-70" data-reveal>Spending is wired up in P5 · demo store.</div>
+		</section>
+
+	</main>
+
+	<footer class="border-t border-sand">
+		<div class="mx-auto max-w-6xl px-5 py-6 text-sm text-muted flex flex-wrap items-center justify-between gap-2">
+			<span>The onchain pocket-money app for Canadian families.</span>
+			<span class="flex items-center gap-2">
+				<span class="w-2 h-2 rounded-full bg-gold"></span> Solana devnet · Built for Superteam Canada
+			</span>
+		</div>
+	</footer>
+
 	<script src="/js/main.js"></script>
 </body>
 </html>
