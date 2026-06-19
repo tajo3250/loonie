@@ -1,0 +1,29 @@
+{
+	"name": "tailwind-v4-template",
+	"version": "1.0.0",
+	"description": "Modern website template with Tailwind CSS v4",
+	"author": "@xtaiao",
+	"license": "MIT",
+	"type": "module",
+	"scripts": {
+		"dev": "npm-run-all --parallel dev:*",
+		"dev:tailwind": "tailwindcss --input ./src/styles/tailwind.css --output ./dist/css/output.css --watch",
+		"dev:js": "node build.js --watch",
+		"dev:server": "npx serve dist -p 3000",
+		"build": "npm-run-all build:clean build:parallel",
+		"build:clean": "node clean.js",
+		"build:parallel": "npm-run-all --parallel build:tailwind build:js build:copy",
+		"build:tailwind": "tailwindcss --input ./src/styles/tailwind.css --output ./dist/css/output.css --minify",
+		"build:js": "node build.js",
+		"build:copy": "node copy.js"
+	},
+	"devDependencies": {
+		"@tailwindcss/cli": "^4.1.18",
+		"esbuild": "^0.27.3",
+		"npm-run-all": "^4.1.5",
+		"tailwindcss": "^4.1.18"
+	},
+	"dependencies": {
+		"gsap": "^3.15.0"
+	}
+}
