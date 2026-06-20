@@ -3,6 +3,7 @@ import { address } from '@solana/kit'
 import { getSolBalance } from './lib/rpc.js'
 import { listSolanaWallets, onWalletsChange, connect, disconnect, createWalletSigner } from './lib/wallet.js'
 import { truncateAddress } from './lib/format.js'
+import { initParentFeature, refreshParent } from './features/parent.js'
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -139,11 +140,14 @@ async function renderConnected() {
 		console.error('Balance fetch failed:', err)
 		balanceEl.textContent = ''
 	}
+
+	refreshParent(session)
 }
 
 function renderDisconnected() {
 	document.querySelector('[data-connect]').hidden = false
 	document.querySelector('[data-wallet]').hidden = true
+	refreshParent(session)
 }
 
 function wireEvents() {
@@ -168,6 +172,8 @@ function wireEvents() {
 
 function init() {
 	wireEvents()
+	initParentFeature()
+	refreshParent(session)
 	setRole('parent')
 	const hero = document.querySelector('main > section:first-of-type')
 	if (hero) reveal([hero])

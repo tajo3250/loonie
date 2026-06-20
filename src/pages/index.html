@@ -58,15 +58,39 @@
 		</section>
 
 		<section data-panel="parent" class="space-y-6">
-			<div class="flex items-end justify-between gap-4" data-reveal>
-				<div>
-					<h2 class="text-2xl font-bold">Parent dashboard</h2>
-					<p class="text-muted mt-1">Set up allowances and watch them — your balance never leaves your wallet.</p>
-				</div>
+			<div data-reveal>
+				<h2 class="text-2xl font-bold">Parent dashboard</h2>
+				<p class="text-muted mt-1">Set up allowances and watch them — your balance never leaves your wallet.</p>
 			</div>
-			<div class="rounded-card border border-dashed border-sand bg-white/60 p-8 text-center text-muted" data-reveal>
+
+			<div data-parent="disconnected" class="rounded-card border border-dashed border-sand bg-white/60 p-8 text-center text-muted" data-reveal>
 				Connect your wallet to set up the mock-USDC allowance authority and add your first kid.
-				<div class="text-xs mt-2 opacity-70">Coming in the next build step (P1 · onboarding).</div>
+			</div>
+
+			<div data-parent="connected" hidden class="grid sm:grid-cols-2 gap-4">
+				<div class="rounded-card bg-white border border-sand p-6" data-reveal>
+					<div class="text-muted text-sm">Your mock-USDC balance</div>
+					<div class="text-3xl font-bold mt-1" data-parent-balance>—</div>
+					<div class="text-xs text-muted mt-2">Funds stay in your wallet until a kid spends.</div>
+				</div>
+
+				<div class="rounded-card bg-white border border-sand p-6 flex flex-col" data-reveal>
+					<div class="text-muted text-sm">Allowance authority</div>
+					<div class="mt-1 font-semibold flex items-center gap-2" data-auth-status>
+						<span class="w-2 h-2 rounded-full bg-gold"></span> Checking…
+					</div>
+					<p class="text-xs text-muted mt-2 flex-1" data-auth-hint>
+						A one-time setup that lets you delegate allowances on this mint. No funds move.
+					</p>
+					<button data-init-authority hidden class="mt-4 rounded-full bg-maple hover:bg-maple-dark text-white font-semibold px-4 py-2 text-sm transition-colors self-start disabled:opacity-60">
+						Set up authority
+					</button>
+				</div>
+
+				<div class="sm:col-span-2 rounded-card border border-dashed border-sand bg-white/60 p-6 text-center text-muted" data-reveal>
+					Add your first kid — set an amount, a monthly cap, and an expiry.
+					<div class="text-xs mt-2 opacity-70">Coming next: P2 · add a kid.</div>
+				</div>
 			</div>
 		</section>
 

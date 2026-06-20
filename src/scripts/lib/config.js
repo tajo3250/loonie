@@ -1,4 +1,6 @@
+import { address } from '@solana/kit'
 import { SUBSCRIPTIONS_PROGRAM_ADDRESS } from '@solana/subscriptions'
+import { TOKEN_2022_PROGRAM_ADDRESS } from '@solana-program/token-2022'
 
 export const CLUSTER = 'devnet'
 export const RPC_URL = 'https://api.devnet.solana.com'
@@ -6,9 +8,10 @@ export const RPC_SUBSCRIPTIONS_URL = 'wss://api.devnet.solana.com'
 export const WALLET_CHAIN = 'solana:devnet'
 
 export const PROGRAM_ADDRESS = SUBSCRIPTIONS_PROGRAM_ADDRESS
+export const TOKEN_PROGRAM_ADDRESS = TOKEN_2022_PROGRAM_ADDRESS
 
 export const USDC_DECIMALS = 6
-export const MOCK_USDC_MINT = null
+export const MOCK_USDC_MINT = address('4Axed8cXByjwW8X93r1hC6uc8NhbLR5rdAKcwi3feo57')
 
 export const USD_TO_CAD = 1.37
 
