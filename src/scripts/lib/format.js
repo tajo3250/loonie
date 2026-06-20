@@ -14,6 +14,24 @@ export function usdcToBaseUnits(amount) {
 	return BigInt(Math.round(Number(amount) * 10 ** USDC_DECIMALS))
 }
 
+export const PERIOD_WEEK = 7 * 24 * 60 * 60
+export const PERIOD_MONTH = 30 * 24 * 60 * 60
+
+export function periodLabel(seconds) {
+	const s = Number(seconds)
+	if (s === PERIOD_WEEK) return 'week'
+	if (s === PERIOD_MONTH) return 'month'
+	return `${Math.round(s / 86400)} days`
+}
+
+export function formatDate(unixSeconds) {
+	return new Date(Number(unixSeconds) * 1000).toLocaleDateString('en-CA', {
+		month: 'short',
+		day: 'numeric',
+		year: 'numeric',
+	})
+}
+
 export function formatMoney(amount, currency = 'CAD') {
 	const value = currency === 'CAD' ? amount * USD_TO_CAD : amount
 	return new Intl.NumberFormat('en-CA', {

@@ -1,11 +1,15 @@
 import { findAssociatedTokenPda, getCreateAssociatedTokenIdempotentInstructionAsync } from '@solana-program/token-2022'
 import {
+	fetchDelegationsByDelegator,
 	fetchMaybeSubscriptionAuthority,
+	findRecurringDelegationPda,
 	findSubscriptionAuthorityPda,
+	getCreateRecurringDelegationInstruction,
 	getInitSubscriptionAuthorityInstructionAsync,
 } from '@solana/subscriptions'
 import { rpc } from './rpc.js'
 import { sendWithSigner } from './transactions.js'
+import { usdcToBaseUnits } from './format.js'
 import { MOCK_USDC_MINT, TOKEN_PROGRAM_ADDRESS } from './config.js'
 
 export async function getAuthorityPda(owner) {
@@ -43,4 +47,38 @@ export async function initAuthority(signer) {
 		tokenProgram: TOKEN_PROGRAM_ADDRESS,
 	})
 	return sendWithSigner(signer, [createAtaIx, initIx])
+}
+
+export async function addKid({ signer, kid, amountUsdc, periodSeconds, expiryTs }) {
+	const delegator = signer.address
+	const subscriptionAuthority = await getAuthorityPda(delegator)
+	const auth = await fetchMaybeSubscriptionAuthority(rpc, subscriptionAuthority)
+	if (!auth.exists) throw new Error('Set up your allowance authority first.')
+
+	const nonce = 0n
+	const [delegationAccount] = await findRecurringDelegationPda({
+		subscriptionAuthority,
+		delegator,
+		delegatee: kid,
+		nonce,
+	})
+
+	const ix = getCreateRecurringDelegationInstruction({
+		delegator: signer,
+		subscriptionAuthority,
+		delegationAccount,
+		delegatee: kid,
+		nonce,
+		amountPerPeriod: usdcToBaseUnits(amountUsdc),
+		periodLengthS: BigInt(periodSeconds),
+		startTs: BigInt(Math.floor(Date.now() / 1000)),
+		expiryTs: BigInt(expiryTs),
+		expectedSubscriptionAuthorityInitId: auth.data.initId,
+	})
+	return sendWithSigner(signer, [ix])
+}
+
+export async function listKids(owner) {
+	const all = await fetchDelegationsByDelegator(rpc, owner)
+	return all.filter(d => d.kind === 'recurring')
 }
