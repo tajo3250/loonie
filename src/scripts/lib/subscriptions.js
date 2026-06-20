@@ -34,11 +34,9 @@ export async function getAta(owner) {
 	return ata
 }
 
-export const getParentAta = getAta
-
 export async function initAuthority(signer) {
 	const owner = signer.address
-	const userAta = await getParentAta(owner)
+	const userAta = await getAta(owner)
 	const createAtaIx = await getCreateAssociatedTokenIdempotentInstructionAsync({
 		payer: signer,
 		mint: MOCK_USDC_MINT,

@@ -1,6 +1,6 @@
 import gsap from 'gsap'
 import { address } from '@solana/kit'
-import { addKid, fetchAuthority, getParentAta, initAuthority, listKids, revokeKid, summarizeDelegation } from '../lib/subscriptions.js'
+import { addKid, fetchAuthority, getAta, initAuthority, listKids, revokeKid, summarizeDelegation } from '../lib/subscriptions.js'
 import { getTokenUiAmount } from '../lib/rpc.js'
 import {
 	formatDate,
@@ -41,7 +41,7 @@ async function loadBalance(owner) {
 	const node = el('[data-parent-balance]')
 	node.textContent = '…'
 	try {
-		const ata = await getParentAta(owner)
+		const ata = await getAta(owner)
 		animateBalance(node, await getTokenUiAmount(ata))
 	} catch (err) {
 		console.error('Balance load failed:', err)
@@ -113,7 +113,7 @@ function kidCard(d) {
 		<div class="flex items-start justify-between gap-3">
 			<div class="flex items-center gap-3 min-w-0">
 				<div class="w-10 h-10 rounded-full bg-loon/10 text-loon flex items-center justify-center shrink-0">
-					<svg class="w-5 h-5"><use href="#i-user"/></svg>
+					<svg class="w-5 h-5" aria-hidden="true"><use href="#i-user"/></svg>
 				</div>
 				<div class="min-w-0">
 					<div class="font-semibold truncate">${truncateAddress(kid)}</div>
@@ -121,7 +121,7 @@ function kidCard(d) {
 				</div>
 			</div>
 			<button data-revoke class="text-muted hover:text-maple text-sm font-medium inline-flex items-center gap-1 transition-colors disabled:opacity-50">
-				<svg class="w-4 h-4"><use href="#i-revoke"/></svg> Revoke
+				<svg class="w-4 h-4" aria-hidden="true"><use href="#i-revoke"/></svg> Revoke
 			</button>
 		</div>
 		<div class="mt-4">

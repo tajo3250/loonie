@@ -61,7 +61,7 @@ function allowanceCard(d) {
 				<div class="text-xs text-muted">of ${formatMoney(amount)} this ${per}</div>
 			</div>
 			<div class="w-12 h-12 rounded-full bg-loon/10 text-loon flex items-center justify-center shrink-0" data-coin>
-				<svg class="w-6 h-6"><use href="#i-coin"/></svg>
+				<svg class="w-6 h-6" aria-hidden="true"><use href="#i-coin"/></svg>
 			</div>
 		</div>
 		<div class="mt-3 h-2 rounded-full bg-sand overflow-hidden">

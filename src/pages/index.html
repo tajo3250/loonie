@@ -5,6 +5,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Loonie</title>
 	<meta name="description" content="Onchain pocket money for Canadian families. Funds stay in the parent's wallet until the kid spends.">
+	<meta name="theme-color" content="#fbf7f0">
+	<meta property="og:title" content="Loonie — pocket money, onchain">
+	<meta property="og:description" content="A monthly allowance on Solana. Your money stays in your wallet until they spend it.">
+	<meta property="og:type" content="website">
+	<meta name="twitter:card" content="summary">
 	<link rel="icon" href="/favicon.ico">
 	<link href="/css/output.css" rel="stylesheet" />
 </head>
@@ -22,36 +27,35 @@
 			<symbol id="i-coffee" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8h1a4 4 0 0 1 0 8h-1"/><path d="M3 8h13v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><path d="M7 2v3"/><path d="M11 2v3"/></symbol>
 			<symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></symbol>
 			<symbol id="i-store" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9 5 4h14l1 5"/><path d="M4 9v11h16V9"/><path d="M4 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0"/><path d="M9 20v-5h6v5"/></symbol>
-			<symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/></symbol>
 		</defs>
 	</svg>
 
 	<header class="sticky top-0 z-30 backdrop-blur-md bg-cream/80 border-b border-sand">
 		<div class="mx-auto max-w-5xl px-5 h-16 flex items-center justify-between gap-4">
-			<a href="/" class="flex items-center gap-2 font-bold text-lg tracking-tight">
-				<svg class="w-6 h-6 text-maple"><use href="#i-coin"/></svg>
+			<a href="/" class="flex items-center gap-2 font-bold text-lg tracking-tight rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loon/40">
+				<svg class="w-6 h-6 text-maple" aria-hidden="true"><use href="#i-coin"/></svg>
 				Loonie
 			</a>
 
-			<nav class="hidden sm:flex items-center p-1 rounded-full bg-sand/70 text-sm font-medium" role="tablist">
-				<button data-role="parent" class="role-tab px-4 py-1.5 rounded-full transition-colors" role="tab">Parent</button>
-				<button data-role="kid" class="role-tab px-4 py-1.5 rounded-full transition-colors" role="tab">Kid</button>
-				<button data-role="store" class="role-tab px-4 py-1.5 rounded-full transition-colors" role="tab">Store</button>
+			<nav class="hidden sm:flex items-center p-1 rounded-full bg-sand/70 text-sm font-medium" role="tablist" aria-label="View">
+				<button data-role="parent" id="tab-parent" role="tab" aria-controls="panel-parent" class="px-4 py-1.5 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loon/40">Parent</button>
+				<button data-role="kid" id="tab-kid" role="tab" aria-controls="panel-kid" class="px-4 py-1.5 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loon/40">Kid</button>
+				<button data-role="store" id="tab-store" role="tab" aria-controls="panel-store" class="px-4 py-1.5 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loon/40">Store</button>
 			</nav>
 
 			<div class="flex items-center gap-2">
-			<button data-currency class="rounded-full border border-sand bg-white text-muted hover:text-ink font-semibold px-3 py-2 text-sm transition-colors" title="Toggle display currency">CAD</button>
-			<div class="relative">
-				<button data-connect class="rounded-full bg-loon hover:bg-loon-dark text-white font-semibold px-4 py-2 text-sm transition-colors flex items-center gap-2">
-					<svg class="w-4 h-4"><use href="#i-wallet"/></svg> Connect
-				</button>
-				<button data-wallet hidden class="rounded-full bg-white border border-sand pl-3 pr-3 py-2 text-sm font-semibold flex items-center gap-2">
-					<span class="w-2 h-2 rounded-full bg-loon"></span>
-					<span data-wallet-address>—</span>
-					<span class="text-muted font-normal" data-wallet-balance></span>
-				</button>
-				<div data-wallet-menu hidden class="absolute right-0 mt-2 w-60 rounded-2xl bg-white border border-sand shadow-xl p-2 text-sm"></div>
-			</div>
+				<button data-currency class="rounded-full border border-sand bg-white text-muted hover:text-ink font-semibold px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loon/40" aria-label="Toggle display currency">CAD</button>
+				<div class="relative">
+					<button data-connect class="rounded-full bg-loon hover:bg-loon-dark text-white font-semibold px-4 py-2 text-sm transition-colors flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loon/40">
+						<svg class="w-4 h-4" aria-hidden="true"><use href="#i-wallet"/></svg> Connect
+					</button>
+					<button data-wallet hidden class="rounded-full bg-white border border-sand px-3 py-2 text-sm font-semibold flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loon/40">
+						<span class="w-2 h-2 rounded-full bg-loon"></span>
+						<span data-wallet-address></span>
+						<span class="text-muted font-normal" data-wallet-balance></span>
+					</button>
+					<div data-wallet-menu hidden class="absolute right-0 mt-2 w-60 rounded-2xl bg-white border border-sand shadow-xl p-2 text-sm"></div>
+				</div>
 			</div>
 		</div>
 	</header>
@@ -66,15 +70,15 @@
 				A monthly allowance on Solana. Your money stays until they spend it.
 			</p>
 			<div class="mt-6 flex flex-wrap gap-2 text-sm font-medium">
-				<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-sand"><svg class="w-4 h-4 text-loon"><use href="#i-shield"/></svg> Funds stay put</span>
-				<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-sand"><svg class="w-4 h-4 text-loon"><use href="#i-refresh"/></svg> Resets monthly</span>
-				<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-sand"><svg class="w-4 h-4 text-loon"><use href="#i-revoke"/></svg> Revocable</span>
+				<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-sand"><svg class="w-4 h-4 text-loon" aria-hidden="true"><use href="#i-shield"/></svg> Funds stay put</span>
+				<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-sand"><svg class="w-4 h-4 text-loon" aria-hidden="true"><use href="#i-refresh"/></svg> Resets monthly</span>
+				<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-sand"><svg class="w-4 h-4 text-loon" aria-hidden="true"><use href="#i-revoke"/></svg> Revocable</span>
 			</div>
 		</section>
 
-		<section data-panel="parent" class="space-y-5">
+		<section data-panel="parent" id="panel-parent" role="tabpanel" aria-labelledby="tab-parent" class="space-y-5">
 			<div data-parent="disconnected" class="rounded-card border border-dashed border-sand bg-white/60 p-10 text-center text-muted" data-reveal>
-				<svg class="w-7 h-7 mx-auto mb-3 text-loon"><use href="#i-wallet"/></svg>
+				<svg class="w-7 h-7 mx-auto mb-3 text-loon" aria-hidden="true"><use href="#i-wallet"/></svg>
 				Connect your wallet to get started.
 			</div>
 
@@ -82,7 +86,7 @@
 				<div class="grid sm:grid-cols-2 gap-4">
 					<div class="rounded-card bg-white border border-sand p-5" data-reveal>
 						<div class="text-muted text-sm">Your balance</div>
-						<div class="text-3xl font-bold mt-1" data-parent-balance>—</div>
+						<div class="text-3xl font-bold mt-1" data-parent-balance></div>
 					</div>
 					<div class="rounded-card bg-white border border-sand p-5 flex items-center justify-between gap-3" data-reveal>
 						<div>
@@ -91,7 +95,7 @@
 								<span class="w-2 h-2 rounded-full bg-gold"></span> Checking…
 							</div>
 						</div>
-						<button data-init-authority hidden class="rounded-full bg-maple hover:bg-maple-dark text-white font-semibold px-4 py-2 text-sm transition-colors disabled:opacity-60 whitespace-nowrap">
+						<button data-init-authority hidden class="rounded-full bg-maple hover:bg-maple-dark text-white font-semibold px-4 py-2 text-sm transition-colors disabled:opacity-60 whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-maple/40">
 							Set up
 						</button>
 					</div>
@@ -100,21 +104,21 @@
 				<form data-add-kid class="rounded-card bg-white border border-sand p-5 grid sm:grid-cols-[1fr_auto_auto_auto] gap-3 items-end" data-reveal>
 					<label class="block">
 						<span class="text-muted text-sm">Kid wallet</span>
-						<input name="kid" type="text" required placeholder="Paste pubkey" class="mt-1 w-full rounded-xl border border-sand bg-cream px-3 py-2 text-sm focus:outline-none focus:border-loon" />
+						<input name="kid" type="text" required placeholder="Paste pubkey" class="mt-1 w-full rounded-xl border border-sand bg-cream px-3 py-2 text-sm focus:outline-none focus:border-loon focus:ring-2 focus:ring-loon/20" />
 					</label>
 					<label class="block">
 						<span class="text-muted text-sm">Amount</span>
-						<input name="amount" type="number" min="1" step="1" value="100" required class="mt-1 w-28 rounded-xl border border-sand bg-cream px-3 py-2 text-sm focus:outline-none focus:border-loon" />
+						<input name="amount" type="number" min="1" step="1" value="100" required class="mt-1 w-28 rounded-xl border border-sand bg-cream px-3 py-2 text-sm focus:outline-none focus:border-loon focus:ring-2 focus:ring-loon/20" />
 					</label>
 					<label class="block">
 						<span class="text-muted text-sm">Per</span>
-						<select name="period" class="mt-1 rounded-xl border border-sand bg-cream px-3 py-2 text-sm focus:outline-none focus:border-loon">
+						<select name="period" class="mt-1 rounded-xl border border-sand bg-cream px-3 py-2 text-sm focus:outline-none focus:border-loon focus:ring-2 focus:ring-loon/20">
 							<option value="month" selected>Month</option>
 							<option value="week">Week</option>
 						</select>
 					</label>
-					<button type="submit" data-add-kid-submit class="rounded-full bg-loon hover:bg-loon-dark text-white font-semibold px-4 py-2.5 text-sm transition-colors flex items-center gap-1.5 disabled:opacity-60">
-						<svg class="w-4 h-4"><use href="#i-plus"/></svg> Add
+					<button type="submit" data-add-kid-submit class="rounded-full bg-loon hover:bg-loon-dark text-white font-semibold px-4 py-2.5 text-sm transition-colors flex items-center gap-1.5 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loon/40">
+						<svg class="w-4 h-4" aria-hidden="true"><use href="#i-plus"/></svg> Add
 					</button>
 					<p data-add-kid-error class="sm:col-span-4 text-sm text-maple" hidden></p>
 				</form>
@@ -124,9 +128,9 @@
 			</div>
 		</section>
 
-		<section data-panel="kid" hidden class="space-y-5">
+		<section data-panel="kid" id="panel-kid" role="tabpanel" aria-labelledby="tab-kid" hidden class="space-y-5">
 			<div data-kid="disconnected" class="rounded-card border border-dashed border-sand bg-white/60 p-10 text-center text-muted" data-reveal>
-				<svg class="w-7 h-7 mx-auto mb-3 text-loon"><use href="#i-user"/></svg>
+				<svg class="w-7 h-7 mx-auto mb-3 text-loon" aria-hidden="true"><use href="#i-user"/></svg>
 				Connect the kid wallet to see this month's allowance.
 			</div>
 			<div data-kid="connected" hidden class="space-y-4">
@@ -137,7 +141,7 @@
 			</div>
 		</section>
 
-		<section data-panel="store" hidden class="space-y-5">
+		<section data-panel="store" id="panel-store" role="tabpanel" aria-labelledby="tab-store" hidden class="space-y-5">
 			<div data-merchants class="grid sm:grid-cols-3 gap-4"></div>
 			<p class="text-xs text-muted" data-reveal>Demo merchants. Spending happens from the Kid view.</p>
 		</section>
@@ -146,7 +150,7 @@
 
 	<footer class="border-t border-sand">
 		<div class="mx-auto max-w-5xl px-5 py-5 text-sm text-muted flex flex-wrap items-center justify-between gap-2">
-			<span class="inline-flex items-center gap-1.5"><svg class="w-4 h-4 text-maple"><use href="#i-coin"/></svg> Onchain pocket money for Canadian families</span>
+			<span class="inline-flex items-center gap-1.5"><svg class="w-4 h-4 text-maple" aria-hidden="true"><use href="#i-coin"/></svg> Onchain pocket money for Canadian families</span>
 			<span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-gold"></span> Solana devnet · Superteam Canada</span>
 		</div>
 	</footer>
