@@ -6,10 +6,11 @@ import {
 	findSubscriptionAuthorityPda,
 	getCreateRecurringDelegationInstruction,
 	getInitSubscriptionAuthorityInstructionAsync,
+	getRevokeDelegationInstruction,
 } from '@solana/subscriptions'
 import { rpc } from './rpc.js'
 import { sendWithSigner } from './transactions.js'
-import { usdcToBaseUnits } from './format.js'
+import { baseUnitsToUsdc, usdcToBaseUnits } from './format.js'
 import { MOCK_USDC_MINT, TOKEN_PROGRAM_ADDRESS } from './config.js'
 
 export async function getAuthorityPda(owner) {
@@ -81,4 +82,31 @@ export async function addKid({ signer, kid, amountUsdc, periodSeconds, expiryTs 
 export async function listKids(owner) {
 	const all = await fetchDelegationsByDelegator(rpc, owner)
 	return all.filter(d => d.kind === 'recurring')
+}
+
+export async function revokeKid({ signer, delegationAccount }) {
+	const ix = getRevokeDelegationInstruction({ authority: signer, delegationAccount })
+	return sendWithSigner(signer, [ix])
+}
+
+export function summarizeDelegation(d) {
+	const now = Math.floor(Date.now() / 1000)
+	const start = Number(d.data.currentPeriodStartTs)
+	const periodLen = Number(d.data.periodLengthS)
+	const amount = baseUnitsToUsdc(d.data.amountPerPeriod)
+	const pulled = baseUnitsToUsdc(d.data.amountPulledInPeriod)
+	const expiry = Number(d.data.expiryTs)
+	const expired = now >= expiry
+
+	let remaining, resetTs
+	if (periodLen > 0 && now >= start + periodLen) {
+		const elapsed = Math.floor((now - start) / periodLen)
+		resetTs = start + (elapsed + 1) * periodLen
+		remaining = amount
+	} else {
+		resetTs = start + periodLen
+		remaining = Math.max(0, amount - pulled)
+	}
+
+	return { amount, remaining, resetTs, expiry, expired, periodLen }
 }

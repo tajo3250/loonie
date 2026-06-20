@@ -1,9 +1,8 @@
 import gsap from 'gsap'
 import { address } from '@solana/kit'
-import { addKid, fetchAuthority, getParentAta, initAuthority, listKids } from '../lib/subscriptions.js'
+import { addKid, fetchAuthority, getParentAta, initAuthority, listKids, revokeKid, summarizeDelegation } from '../lib/subscriptions.js'
 import { getTokenUiAmount } from '../lib/rpc.js'
 import {
-	baseUnitsToUsdc,
 	formatDate,
 	formatMoney,
 	periodLabel,
@@ -103,19 +102,70 @@ async function loadAuthority(owner) {
 
 function kidCard(d) {
 	const kid = d.data.header.delegatee
-	const amount = baseUnitsToUsdc(d.data.amountPerPeriod)
-	const per = periodLabel(d.data.periodLengthS)
+	const { amount, remaining, resetTs, expiry, expired, periodLen } = summarizeDelegation(d)
+	const per = periodLabel(periodLen)
+	const pct = amount > 0 ? Math.round((remaining / amount) * 100) : 0
+
 	const card = document.createElement('div')
-	card.className = 'rounded-card bg-white border border-sand p-5 flex items-center gap-4'
+	card.className = 'rounded-card bg-white border border-sand p-5'
+	if (expired) card.classList.add('opacity-70')
 	card.innerHTML = `
-		<div class="w-10 h-10 rounded-full bg-loon/10 text-loon flex items-center justify-center shrink-0">
-			<svg class="w-5 h-5"><use href="#i-user"/></svg>
+		<div class="flex items-start justify-between gap-3">
+			<div class="flex items-center gap-3 min-w-0">
+				<div class="w-10 h-10 rounded-full bg-loon/10 text-loon flex items-center justify-center shrink-0">
+					<svg class="w-5 h-5"><use href="#i-user"/></svg>
+				</div>
+				<div class="min-w-0">
+					<div class="font-semibold truncate">${truncateAddress(kid)}</div>
+					<div class="text-muted text-sm">${formatMoney(amount, 'USD')} / ${per}</div>
+				</div>
+			</div>
+			<button data-revoke class="text-muted hover:text-maple text-sm font-medium inline-flex items-center gap-1 transition-colors disabled:opacity-50">
+				<svg class="w-4 h-4"><use href="#i-revoke"/></svg> Revoke
+			</button>
 		</div>
-		<div class="min-w-0">
-			<div class="font-semibold truncate">${truncateAddress(kid)}</div>
-			<div class="text-muted text-sm">${formatMoney(amount, 'USD')} / ${per} · expires ${formatDate(d.data.expiryTs)}</div>
-		</div>`
+		<div class="mt-4">
+			<div class="flex justify-between text-sm mb-1.5">
+				<span class="text-muted">Remaining this ${per}</span>
+				<span class="font-semibold" data-remaining>${formatMoney(remaining, 'USD')}</span>
+			</div>
+			<div class="h-2 rounded-full bg-sand overflow-hidden">
+				<div class="h-full bg-loon rounded-full" data-bar style="width:0%"></div>
+			</div>
+		</div>
+		<div class="mt-3 text-xs text-muted">${expired ? 'Expired' : `Resets ${formatDate(resetTs)} · Expires ${formatDate(expiry)}`}</div>`
+
+	const bar = card.querySelector('[data-bar]')
+	const remEl = card.querySelector('[data-remaining]')
+	if (reduced) {
+		bar.style.width = `${pct}%`
+	} else {
+		gsap.to(bar, { width: `${pct}%`, duration: 0.7, ease: 'power2.out' })
+		const obj = { v: 0 }
+		gsap.to(obj, { v: remaining, duration: 0.7, ease: 'power2.out', onUpdate: () => (remEl.textContent = formatMoney(obj.v, 'USD')) })
+	}
+
+	card.querySelector('[data-revoke]').addEventListener('click', () => onRevoke(d, card))
 	return card
+}
+
+async function onRevoke(d, card) {
+	if (!currentSigner) return
+	const btn = card.querySelector('[data-revoke]')
+	const label = btn.innerHTML
+	btn.disabled = true
+	btn.textContent = 'Revoking…'
+	try {
+		const sig = await revokeKid({ signer: currentSigner, delegationAccount: d.address })
+		console.log('revokeDelegation:', explorerTx(sig))
+		const finish = () => loadKids(currentSigner.address)
+		if (reduced) finish()
+		else gsap.to(card, { opacity: 0, y: -8, duration: 0.25, ease: 'power2.in', onComplete: finish })
+	} catch (err) {
+		console.error('Revoke failed:', err)
+		btn.disabled = false
+		btn.innerHTML = label
+	}
 }
 
 async function loadKids(owner) {
