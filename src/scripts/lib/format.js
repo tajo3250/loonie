@@ -1,4 +1,5 @@
 import { USDC_DECIMALS, USD_TO_CAD } from './config.js'
+import { getCurrency } from './currency.js'
 
 export function truncateAddress(addr, lead = 4, tail = 4) {
 	const s = String(addr)
@@ -32,7 +33,7 @@ export function formatDate(unixSeconds) {
 	})
 }
 
-export function formatMoney(amount, currency = 'CAD') {
+export function formatMoney(amount, currency = getCurrency()) {
 	const value = currency === 'CAD' ? amount * USD_TO_CAD : amount
 	return new Intl.NumberFormat('en-CA', {
 		style: 'currency',

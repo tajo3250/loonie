@@ -39,6 +39,8 @@
 				<button data-role="store" class="role-tab px-4 py-1.5 rounded-full transition-colors" role="tab">Store</button>
 			</nav>
 
+			<div class="flex items-center gap-2">
+			<button data-currency class="rounded-full border border-sand bg-white text-muted hover:text-ink font-semibold px-3 py-2 text-sm transition-colors" title="Toggle display currency">CAD</button>
 			<div class="relative">
 				<button data-connect class="rounded-full bg-loon hover:bg-loon-dark text-white font-semibold px-4 py-2 text-sm transition-colors flex items-center gap-2">
 					<svg class="w-4 h-4"><use href="#i-wallet"/></svg> Connect
@@ -49,6 +51,7 @@
 					<span class="text-muted font-normal" data-wallet-balance></span>
 				</button>
 				<div data-wallet-menu hidden class="absolute right-0 mt-2 w-60 rounded-2xl bg-white border border-sand shadow-xl p-2 text-sm"></div>
+			</div>
 			</div>
 		</div>
 	</header>

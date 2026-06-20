@@ -6,6 +6,7 @@ import { truncateAddress } from './lib/format.js'
 import { initParentFeature, refreshParent } from './features/parent.js'
 import { refreshKid } from './features/kid.js'
 import { initStore } from './features/store.js'
+import { getCurrency, toggleCurrency, onCurrencyChange } from './lib/currency.js'
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -167,6 +168,15 @@ function wireEvents() {
 	document.querySelector('[data-connect]').addEventListener('click', toggleMenu)
 	document.querySelector('[data-wallet]').addEventListener('click', toggleMenu)
 	document.addEventListener('click', closeWalletMenu)
+
+	const currencyBtn = document.querySelector('[data-currency]')
+	currencyBtn.textContent = getCurrency()
+	currencyBtn.addEventListener('click', toggleCurrency)
+	onCurrencyChange(currency => {
+		currencyBtn.textContent = currency
+		refreshParent(session)
+		refreshKid(session)
+	})
 
 	onWalletsChange(() => {
 		const menu = document.querySelector('[data-wallet-menu]')

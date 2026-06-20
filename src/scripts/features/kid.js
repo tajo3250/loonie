@@ -57,8 +57,8 @@ function allowanceCard(d) {
 		<div class="flex items-center justify-between gap-3">
 			<div>
 				<div class="text-muted text-sm">Allowance from ${truncateAddress(d.data.header.delegator)}</div>
-				<div class="text-3xl font-bold mt-0.5" data-remaining>${formatMoney(remaining, 'USD')}</div>
-				<div class="text-xs text-muted">of ${formatMoney(amount, 'USD')} this ${per}</div>
+				<div class="text-3xl font-bold mt-0.5" data-remaining>${formatMoney(remaining)}</div>
+				<div class="text-xs text-muted">of ${formatMoney(amount)} this ${per}</div>
 			</div>
 			<div class="w-12 h-12 rounded-full bg-loon/10 text-loon flex items-center justify-center shrink-0" data-coin>
 				<svg class="w-6 h-6"><use href="#i-coin"/></svg>
@@ -87,7 +87,7 @@ function allowanceCard(d) {
 	} else {
 		gsap.to(bar, { width: `${pct}%`, duration: 0.7, ease: 'power2.out' })
 		const obj = { v: 0 }
-		gsap.to(obj, { v: remaining, duration: 0.7, ease: 'power2.out', onUpdate: () => (remEl.textContent = formatMoney(obj.v, 'USD')) })
+		gsap.to(obj, { v: remaining, duration: 0.7, ease: 'power2.out', onUpdate: () => (remEl.textContent = formatMoney(obj.v)) })
 	}
 
 	const form = card.querySelector('[data-spend]')
@@ -118,7 +118,7 @@ async function onSpend(e, d, card) {
 	const { remaining } = summarizeDelegation(d)
 
 	if (!(amountUsdc > 0)) return showMsg(msg, 'Enter an amount.', 'maple')
-	if (amountUsdc > remaining + 1e-9) return showMsg(msg, `Only ${formatMoney(remaining, 'USD')} left this period.`, 'maple')
+	if (amountUsdc > remaining + 1e-9) return showMsg(msg, `Only ${formatMoney(remaining)} left this period.`, 'maple')
 
 	const merchant = MERCHANTS.find(m => m.id === data.get('merchant'))
 	const btn = form.querySelector('button')
@@ -128,7 +128,7 @@ async function onSpend(e, d, card) {
 	try {
 		const sig = await spend({ signer: currentSigner, delegation: d, merchant: merchant.address, amountUsdc })
 		console.log('transferRecurring:', explorerTx(sig))
-		showMsg(msg, `Sent ${formatMoney(amountUsdc, 'USD')} to ${merchant.name}`, 'loon')
+		showMsg(msg, `Sent ${formatMoney(amountUsdc)} to ${merchant.name}`, 'loon')
 		pop(card)
 		setTimeout(() => loadAllowances(currentSigner.address), 700)
 	} catch (err) {

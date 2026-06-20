@@ -50,7 +50,7 @@ async function loadBalance(owner) {
 }
 
 function animateBalance(node, amount) {
-	const render = v => formatMoney(v, 'USD')
+	const render = v => formatMoney(v)
 	if (reduced) {
 		node.textContent = render(amount)
 		return
@@ -117,7 +117,7 @@ function kidCard(d) {
 				</div>
 				<div class="min-w-0">
 					<div class="font-semibold truncate">${truncateAddress(kid)}</div>
-					<div class="text-muted text-sm">${formatMoney(amount, 'USD')} / ${per}</div>
+					<div class="text-muted text-sm">${formatMoney(amount)} / ${per}</div>
 				</div>
 			</div>
 			<button data-revoke class="text-muted hover:text-maple text-sm font-medium inline-flex items-center gap-1 transition-colors disabled:opacity-50">
@@ -127,7 +127,7 @@ function kidCard(d) {
 		<div class="mt-4">
 			<div class="flex justify-between text-sm mb-1.5">
 				<span class="text-muted">Remaining this ${per}</span>
-				<span class="font-semibold" data-remaining>${formatMoney(remaining, 'USD')}</span>
+				<span class="font-semibold" data-remaining>${formatMoney(remaining)}</span>
 			</div>
 			<div class="h-2 rounded-full bg-sand overflow-hidden">
 				<div class="h-full bg-loon rounded-full" data-bar style="width:0%"></div>
@@ -142,7 +142,7 @@ function kidCard(d) {
 	} else {
 		gsap.to(bar, { width: `${pct}%`, duration: 0.7, ease: 'power2.out' })
 		const obj = { v: 0 }
-		gsap.to(obj, { v: remaining, duration: 0.7, ease: 'power2.out', onUpdate: () => (remEl.textContent = formatMoney(obj.v, 'USD')) })
+		gsap.to(obj, { v: remaining, duration: 0.7, ease: 'power2.out', onUpdate: () => (remEl.textContent = formatMoney(obj.v)) })
 	}
 
 	card.querySelector('[data-revoke]').addEventListener('click', () => onRevoke(d, card))
