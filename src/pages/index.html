@@ -122,32 +122,21 @@
 		</section>
 
 		<section data-panel="kid" hidden class="space-y-5">
-			<div class="rounded-card border border-dashed border-sand bg-white/60 p-10 text-center text-muted" data-reveal>
+			<div data-kid="disconnected" class="rounded-card border border-dashed border-sand bg-white/60 p-10 text-center text-muted" data-reveal>
 				<svg class="w-7 h-7 mx-auto mb-3 text-loon"><use href="#i-user"/></svg>
 				Connect the kid wallet to see this month's allowance.
-				<div class="text-xs mt-2 opacity-70">P4 · kid view</div>
+			</div>
+			<div data-kid="connected" hidden class="space-y-4">
+				<div data-allowances class="space-y-4"></div>
+				<div data-allowances-empty class="rounded-card border border-dashed border-sand bg-white/60 p-10 text-center text-muted" hidden>
+					No allowance yet. Ask a parent to add your wallet address.
+				</div>
 			</div>
 		</section>
 
 		<section data-panel="store" hidden class="space-y-5">
-			<div class="grid sm:grid-cols-3 gap-4">
-				<div class="rounded-card bg-white border border-sand p-6" data-reveal>
-					<svg class="w-7 h-7 text-maple"><use href="#i-coffee"/></svg>
-					<div class="font-semibold mt-3">Timmies</div>
-					<div class="text-muted text-sm">Coffee &amp; a Timbit</div>
-				</div>
-				<div class="rounded-card bg-white border border-sand p-6" data-reveal>
-					<svg class="w-7 h-7 text-maple"><use href="#i-book"/></svg>
-					<div class="font-semibold mt-3">Indigo</div>
-					<div class="text-muted text-sm">A weekend read</div>
-				</div>
-				<div class="rounded-card bg-white border border-sand p-6" data-reveal>
-					<svg class="w-7 h-7 text-maple"><use href="#i-store"/></svg>
-					<div class="font-semibold mt-3">Corner Store</div>
-					<div class="text-muted text-sm">After-school snacks</div>
-				</div>
-			</div>
-			<div class="text-xs text-muted opacity-70" data-reveal>P5 · spending</div>
+			<div data-merchants class="grid sm:grid-cols-3 gap-4"></div>
+			<p class="text-xs text-muted" data-reveal>Demo merchants. Spending happens from the Kid view.</p>
 		</section>
 
 	</main>
