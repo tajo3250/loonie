@@ -28,6 +28,12 @@ from Solana's [Subscriptions program](https://github.com/solana-program/subscrip
 
 > Set the terms, keep the funds. That's the whole pitch.
 
+**Why it generalizes:** "a capped, resettable, revocable budget that someone else can pull from,
+while the funds stay in your wallet" isn't just for kids. The same recurring-delegation primitive
+fits a contractor on a monthly retainer, a SaaS plan, or an **AI agent** given a bounded spending
+budget it can draw down autonomously — without ever handing it your keys or pre-funding a hot wallet.
+Loonie uses the family framing because it makes the trust model instantly obvious.
+
 ---
 
 ## Screens

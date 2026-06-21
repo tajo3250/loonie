@@ -1,8 +1,8 @@
 {
-	"name": "tailwind-v4-template",
+	"name": "loonie",
 	"version": "1.0.0",
-	"description": "Modern website template with Tailwind CSS v4",
-	"author": "@xtaiao",
+	"description": "Pocket money, onchain — recurring allowances for Canadian families on Solana.",
+	"author": "sero",
 	"license": "MIT",
 	"type": "module",
 	"scripts": {
