@@ -88,7 +88,7 @@ async function main() {
 
 	const funder = await getFunder()
 	console.log(`Funder: ${funder.address}`)
-	await ensureSol(funder.address, 1, 2)
+	await ensureSol(funder.address, 0.05, 1)
 
 	const mint = await ensureMint(funder)
 

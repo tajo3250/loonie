@@ -63,10 +63,16 @@ export async function getFunder() {
 
 const sleep = ms => new Promise(r => setTimeout(r, ms))
 
-export async function ensureSol(addr, minSol = 1, topUpSol = 1, attempts = 6) {
+// Airdrops only work on the public faucet — keyed providers (Helius) return 403.
+const publicRpc = createSolanaRpc('https://api.devnet.solana.com')
+const publicRpcSubscriptions = createSolanaRpcSubscriptions('wss://api.devnet.solana.com')
+
+export async function ensureSol(addr, minSol = 0.05, topUpSol = 1, attempts = 5) {
 	const { value } = await rpc.getBalance(addr).send()
-	if (Number(value) / 1e9 >= minSol) return
-	const airdrop = airdropFactory({ rpc, rpcSubscriptions })
+	const have = Number(value) / 1e9
+	if (have >= minSol) return
+
+	const airdrop = airdropFactory({ rpc: publicRpc, rpcSubscriptions: publicRpcSubscriptions })
 	for (let i = 1; i <= attempts; i++) {
 		try {
 			console.log(`Airdropping ${topUpSol} SOL to ${addr} (attempt ${i}/${attempts}) …`)
@@ -77,8 +83,14 @@ export async function ensureSol(addr, minSol = 1, topUpSol = 1, attempts = 6) {
 			})
 			return
 		} catch (err) {
-			if (i === attempts) throw err
-			await sleep(2000 * i)
+			if (i === attempts) {
+				if (have > 0) {
+					console.warn(`Airdrop unavailable; continuing with ${have.toFixed(3)} SOL.`)
+					return
+				}
+				throw err
+			}
+			await sleep(1500 * i)
 		}
 	}
 }
