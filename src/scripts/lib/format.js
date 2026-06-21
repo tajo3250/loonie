@@ -44,9 +44,10 @@ export function formatDate(unixSeconds) {
 
 export function formatMoney(amount, currency = getCurrency()) {
 	const value = currency === 'CAD' ? amount * USD_TO_CAD : amount
-	return new Intl.NumberFormat('en-CA', {
-		style: 'currency',
-		currency,
+	const symbol = currency === 'CAD' ? 'CA$' : 'US$'
+	const number = new Intl.NumberFormat('en-CA', {
+		minimumFractionDigits: 2,
 		maximumFractionDigits: 2,
 	}).format(value)
+	return `${symbol}${number}`
 }

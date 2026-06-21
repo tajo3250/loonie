@@ -31,19 +31,19 @@
 	</svg>
 
 	<header class="sticky top-0 z-30 backdrop-blur-md bg-cream/80 border-b border-sand">
-		<div class="mx-auto max-w-5xl px-5 h-16 flex items-center justify-between gap-4">
-			<a href="/" class="flex items-center gap-2 font-bold text-lg tracking-tight rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loon/40">
+		<div class="mx-auto max-w-5xl px-5 h-16 grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+			<a href="/" class="justify-self-start flex items-center gap-2 font-bold text-lg tracking-tight rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loon/40">
 				<svg class="w-6 h-6 text-maple" aria-hidden="true"><use href="#i-coin"/></svg>
 				Loonie
 			</a>
 
-			<nav class="hidden sm:flex items-center p-1 rounded-full bg-sand/70 text-sm font-medium" role="tablist" aria-label="View">
+			<nav class="justify-self-center hidden sm:flex items-center p-1 rounded-full bg-sand/70 text-sm font-medium" role="tablist" aria-label="View">
 				<button data-role="parent" id="tab-parent" role="tab" aria-controls="panel-parent" class="px-4 py-1.5 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loon/40">Parent</button>
 				<button data-role="kid" id="tab-kid" role="tab" aria-controls="panel-kid" class="px-4 py-1.5 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loon/40">Kid</button>
 				<button data-role="activity" id="tab-activity" role="tab" aria-controls="panel-activity" class="px-4 py-1.5 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loon/40">Activity</button>
 			</nav>
 
-			<div class="flex items-center gap-2">
+			<div class="justify-self-end flex items-center gap-2">
 				<button data-currency class="rounded-full border border-sand bg-white text-muted hover:text-ink font-semibold px-3 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loon/40" aria-label="Toggle display currency">CAD</button>
 				<div class="relative">
 					<button data-connect class="rounded-full bg-loon hover:bg-loon-dark text-white font-semibold px-4 py-2 text-sm transition-colors flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loon/40">
