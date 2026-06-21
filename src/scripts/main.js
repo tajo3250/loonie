@@ -5,7 +5,7 @@ import { listSolanaWallets, onWalletsChange, connect, disconnect, createWalletSi
 import { truncateAddress } from './lib/format.js'
 import { initParentFeature, refreshParent } from './features/parent.js'
 import { refreshKid } from './features/kid.js'
-import { initStore } from './features/store.js'
+import { refreshActivity } from './features/activity.js'
 import { getCurrency, toggleCurrency, onCurrencyChange } from './lib/currency.js'
 
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -29,6 +29,7 @@ function setRole(role) {
 		panel.hidden = panel.dataset.panel !== role
 	})
 	revealPanel(role)
+	if (role === 'activity') refreshActivity(session)
 }
 
 function reveal(targets, delay = 0) {
@@ -146,6 +147,7 @@ async function renderConnected() {
 
 	refreshParent(session)
 	refreshKid(session)
+	refreshActivity(session)
 }
 
 function renderDisconnected() {
@@ -153,6 +155,7 @@ function renderDisconnected() {
 	document.querySelector('[data-wallet]').hidden = true
 	refreshParent(session)
 	refreshKid(session)
+	refreshActivity(session)
 }
 
 function wireEvents() {
@@ -176,6 +179,7 @@ function wireEvents() {
 		currencyBtn.textContent = currency
 		refreshParent(session)
 		refreshKid(session)
+		refreshActivity(session)
 	})
 
 	onWalletsChange(() => {
@@ -187,7 +191,6 @@ function wireEvents() {
 function init() {
 	wireEvents()
 	initParentFeature()
-	initStore()
 	refreshParent(session)
 	refreshKid(session)
 	setRole('parent')

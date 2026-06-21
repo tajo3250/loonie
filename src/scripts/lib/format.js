@@ -25,6 +25,15 @@ export function periodLabel(seconds) {
 	return `${Math.round(s / 86400)} days`
 }
 
+export function timeAgo(unixSeconds) {
+	if (!unixSeconds) return ''
+	const diff = Math.max(0, Math.floor(Date.now() / 1000) - Number(unixSeconds))
+	if (diff < 60) return 'just now'
+	if (diff < 3600) return `${Math.floor(diff / 60)}m ago`
+	if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`
+	return `${Math.floor(diff / 86400)}d ago`
+}
+
 export function formatDate(unixSeconds) {
 	return new Date(Number(unixSeconds) * 1000).toLocaleDateString('en-CA', {
 		month: 'short',

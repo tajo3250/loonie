@@ -40,7 +40,7 @@
 			<nav class="hidden sm:flex items-center p-1 rounded-full bg-sand/70 text-sm font-medium" role="tablist" aria-label="View">
 				<button data-role="parent" id="tab-parent" role="tab" aria-controls="panel-parent" class="px-4 py-1.5 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loon/40">Parent</button>
 				<button data-role="kid" id="tab-kid" role="tab" aria-controls="panel-kid" class="px-4 py-1.5 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loon/40">Kid</button>
-				<button data-role="store" id="tab-store" role="tab" aria-controls="panel-store" class="px-4 py-1.5 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loon/40">Store</button>
+				<button data-role="activity" id="tab-activity" role="tab" aria-controls="panel-activity" class="px-4 py-1.5 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-loon/40">Activity</button>
 			</nav>
 
 			<div class="flex items-center gap-2">
@@ -136,14 +136,21 @@
 			<div data-kid="connected" hidden class="space-y-4">
 				<div data-allowances class="space-y-4"></div>
 				<div data-allowances-empty class="rounded-card border border-dashed border-sand bg-white/60 p-10 text-center text-muted" hidden>
-					No allowance yet. Ask a parent to add your wallet address.
+					No allowance yet. Ask a parent!
 				</div>
 			</div>
 		</section>
 
-		<section data-panel="store" id="panel-store" role="tabpanel" aria-labelledby="tab-store" hidden class="space-y-5">
-			<div data-merchants class="grid sm:grid-cols-3 gap-4"></div>
-			<p class="text-xs text-muted" data-reveal>Demo merchants. Spending happens from the Kid view.</p>
+		<section data-panel="activity" id="panel-activity" role="tabpanel" aria-labelledby="tab-activity" hidden class="space-y-4">
+			<div data-activity="disconnected" class="rounded-card border border-dashed border-sand bg-white/60 p-10 text-center text-muted" data-reveal>
+				<svg class="w-7 h-7 mx-auto mb-3 text-loon" aria-hidden="true"><use href="#i-refresh"/></svg>
+				Connect to see on-chain activity.
+			</div>
+			<div data-activity="connected" hidden class="space-y-3">
+				<div data-activity-list class="space-y-3"></div>
+				<div data-activity-loading class="text-center text-muted text-sm py-4" hidden>Loading…</div>
+				<div data-activity-empty class="rounded-card border border-dashed border-sand bg-white/60 p-10 text-center text-muted" hidden>No spending yet.</div>
+			</div>
 		</section>
 
 	</main>

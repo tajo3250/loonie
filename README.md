@@ -34,8 +34,8 @@ from Solana's [Subscriptions program](https://github.com/solana-program/subscrip
 | Role | What they do |
 |---|---|
 | **Parent** | Connect wallet → one-time authority setup → add kids (amount · period · expiry) → watch remaining-this-cycle and revoke. |
-| **Kid** | Connect wallet → see this month's allowance and what's left → spend at a demo merchant. |
-| **Store** | Three Canadian demo merchants (Timmies, Indigo, a corner store) that act as pull destinations. |
+| **Kid** | Connect wallet → see this month's allowance and what's left → spend at a Canadian demo merchant (Timmies, Indigo, a corner store). |
+| **Activity** | A live on-chain feed of real pulls, read from devnet and parsed from the transactions — proof that every spend actually happened. |
 
 All three live in one single-page app with a role switcher.
 
@@ -70,7 +70,7 @@ src/                      # THE PRODUCT — ships to the browser, no secrets eve
   scripts/
     main.js               # esbuild entry — wiring, wallet connect, role switch
     lib/                  # config, kit RPC, Wallet Standard signer, subscriptions calls, formatting
-    features/             # parent · kid · store UI
+    features/             # parent · kid · activity UI
 scripts/                  # LOCAL DEV ONLY — never bundled, never deployed
   seed.js                 # create mock-USDC mint, fund parent, make demo kids
 .env.local                # script secrets (gitignored)

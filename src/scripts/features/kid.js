@@ -36,8 +36,9 @@ async function loadAllowances(kid) {
 	wrap.innerHTML = ''
 	empty.hidden = items.length > 0
 	items.forEach(d => wrap.appendChild(allowanceCard(d)))
-	if (!reduced && items.length) {
-		gsap.from(wrap.children, { y: 12, opacity: 0, duration: 0.4, ease: 'power2.out', stagger: 0.06, clearProps: 'all' })
+	if (!reduced) {
+		const targets = items.length ? wrap.children : empty
+		gsap.from(targets, { y: 12, opacity: 0, duration: 0.4, ease: 'power2.out', stagger: 0.06, clearProps: 'all' })
 	}
 }
 
@@ -72,10 +73,10 @@ function allowanceCard(d) {
 				? '<div class="mt-4 text-sm text-maple">This allowance has expired.</div>'
 				: `<form data-spend class="mt-4 grid grid-cols-[1fr_auto_auto] gap-2 items-end">
 			<label class="block"><span class="text-muted text-xs">Spend</span>
-				<input name="amount" type="number" min="1" step="1" value="5" class="mt-1 w-full rounded-xl border border-sand bg-cream px-3 py-2 text-sm focus:outline-none focus:border-loon" /></label>
+				<input name="amount" type="number" min="1" step="1" value="5" class="mt-1 w-full rounded-xl border border-sand bg-cream px-3 py-2 text-sm focus:outline-none focus:border-loon focus:ring-2 focus:ring-loon/20" /></label>
 			<label class="block"><span class="text-muted text-xs">At</span>
-				<select name="merchant" class="mt-1 rounded-xl border border-sand bg-cream px-3 py-2 text-sm focus:outline-none focus:border-loon">${merchantOptions()}</select></label>
-			<button type="submit" class="rounded-full bg-maple hover:bg-maple-dark text-white font-semibold px-4 py-2.5 text-sm transition-colors disabled:opacity-60">Spend</button>
+				<select name="merchant" class="mt-1 rounded-xl border border-sand bg-cream px-3 py-2 text-sm focus:outline-none focus:border-loon focus:ring-2 focus:ring-loon/20">${merchantOptions()}</select></label>
+			<button type="submit" class="rounded-full bg-maple hover:bg-maple-dark text-white font-semibold px-4 py-2.5 text-sm transition-colors disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-maple/40">Spend</button>
 			<p data-spend-msg class="col-span-3 text-sm" hidden></p>
 		</form>`
 		}`

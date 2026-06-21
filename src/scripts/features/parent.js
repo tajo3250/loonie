@@ -180,8 +180,9 @@ async function loadKids(owner) {
 	wrap.innerHTML = ''
 	empty.hidden = kids.length > 0
 	kids.forEach(d => wrap.appendChild(kidCard(d)))
-	if (!reduced && kids.length) {
-		gsap.from(wrap.children, { y: 12, opacity: 0, duration: 0.4, ease: 'power2.out', stagger: 0.06, clearProps: 'all' })
+	if (!reduced) {
+		const targets = kids.length ? wrap.children : empty
+		gsap.from(targets, { y: 12, opacity: 0, duration: 0.4, ease: 'power2.out', stagger: 0.06, clearProps: 'all' })
 	}
 }
 
