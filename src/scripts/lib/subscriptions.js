@@ -71,12 +71,14 @@ export async function addKid({ signer, kid, amountUsdc, periodSeconds, expiryTs 
 		subscriptionAuthority,
 		delegationAccount,
 		delegatee: kid,
-		nonce,
-		amountPerPeriod: usdcToBaseUnits(amountUsdc),
-		periodLengthS: BigInt(periodSeconds),
-		startTs: BigInt(Math.floor(Date.now() / 1000)),
-		expiryTs: BigInt(expiryTs),
-		expectedSubscriptionAuthorityInitId: auth.data.initId,
+		recurringDelegation: {
+			nonce,
+			amountPerPeriod: usdcToBaseUnits(amountUsdc),
+			periodLengthS: BigInt(periodSeconds),
+			startTs: BigInt(Math.floor(Date.now() / 1000)),
+			expiryTs: BigInt(expiryTs),
+			expectedSubscriptionAuthorityInitId: auth.data.initId,
+		},
 	})
 	return sendWithSigner(signer, [ix])
 }
