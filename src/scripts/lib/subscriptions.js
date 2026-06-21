@@ -1,3 +1,4 @@
+import { address } from '@solana/kit'
 import { findAssociatedTokenPda, getCreateAssociatedTokenIdempotentInstructionAsync } from '@solana-program/token-2022'
 import {
 	fetchDelegationsByDelegatee,
@@ -14,6 +15,16 @@ import { rpc } from './rpc.js'
 import { sendWithSigner } from './transactions.js'
 import { baseUnitsToUsdc, usdcToBaseUnits } from './format.js'
 import { MOCK_USDC_MINT, TOKEN_PROGRAM_ADDRESS } from './config.js'
+
+const MEMO_PROGRAM_ADDRESS = address('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr')
+
+function memoInstruction(text) {
+	return {
+		programAddress: MEMO_PROGRAM_ADDRESS,
+		accounts: [],
+		data: new TextEncoder().encode(text),
+	}
+}
 
 export async function getAuthorityPda(owner) {
 	const [pda] = await findSubscriptionAuthorityPda({ user: owner, tokenMint: MOCK_USDC_MINT })
@@ -98,15 +109,16 @@ export async function listAllowances(kid) {
 	return all.filter(d => d.kind === 'recurring')
 }
 
-export async function spend({ signer, delegation, merchant, amountUsdc }) {
+export async function withdraw({ signer, delegation, amountUsdc, note }) {
 	const delegator = delegation.data.header.delegator
+	const kid = signer.address
 	const delegatorAta = await getAta(delegator)
-	const receiverAta = await getAta(merchant)
+	const receiverAta = await getAta(kid)
 
 	const createReceiverAta = await getCreateAssociatedTokenIdempotentInstructionAsync({
 		payer: signer,
 		mint: MOCK_USDC_MINT,
-		owner: merchant,
+		owner: kid,
 		tokenProgram: TOKEN_PROGRAM_ADDRESS,
 	})
 	const transferIx = getTransferRecurringInstruction({
@@ -123,7 +135,9 @@ export async function spend({ signer, delegation, merchant, amountUsdc }) {
 			mint: MOCK_USDC_MINT,
 		},
 	})
-	return sendWithSigner(signer, [createReceiverAta, transferIx])
+	const instructions = [createReceiverAta, transferIx]
+	if (note) instructions.push(memoInstruction(note))
+	return sendWithSigner(signer, instructions)
 }
 
 export function summarizeDelegation(d) {

@@ -20,8 +20,9 @@ from Solana's [Subscriptions program](https://github.com/solana-program/subscrip
 - **You (the parent) are the delegator.** Your mock-USDC stays in *your* token account the entire time.
 - **Your kid is the delegatee.** They hold a recurring delegation — say **$100 / month** — a cap that
   resets every cycle.
-- **Spending is a pull, not a push.** When the kid buys something, *they* call `transferRecurring`
-  to pull from your account to the merchant, capped by what's left this period.
+- **Spending is a pull, not a push.** When the kid needs money, *they* call `transferRecurring`
+  to withdraw from your account into their own wallet (with a note for what it's for), capped by
+  what's left this period.
 - **You stay in control.** Revoke anytime and reclaim the rent. Nothing is ever locked or custodied
   by a third party.
 
@@ -34,8 +35,8 @@ from Solana's [Subscriptions program](https://github.com/solana-program/subscrip
 | Role | What they do |
 |---|---|
 | **Parent** | Connect wallet → one-time authority setup → add kids (amount · period · expiry) → watch remaining-this-cycle and revoke. |
-| **Kid** | Connect wallet → see this month's allowance and what's left → spend at a Canadian demo merchant (Timmies, Indigo, a corner store). |
-| **Activity** | A live on-chain feed of real pulls, read from devnet and parsed from the transactions — proof that every spend actually happened. |
+| **Kid** | Connect wallet → see this month's allowance and what's left → withdraw an amount with a note for what it's for. |
+| **Activity** | A live on-chain feed of real withdrawals, read from devnet and parsed from the transactions (amount + note) — proof every withdrawal actually happened. |
 
 All three live in one single-page app with a role switcher.
 
@@ -50,7 +51,7 @@ From [`@solana/subscriptions`](https://www.npmjs.com/package/@solana/subscriptio
 |---|---|---|
 | `initSubscriptionAuthority` | parent | One-time per parent+mint. Creates the Subscription Authority PDA that can delegate on the parent's token account. |
 | `createRecurringDelegation` | parent | Authorize a kid for an amount-per-period + period length + expiry. **This is the allowance.** |
-| `transferRecurring` | kid | Kid pulls funds to a merchant, capped by the remaining budget this period. |
+| `transferRecurring` | kid | Kid withdraws funds into their own wallet (with an on-chain memo note), capped by the remaining budget this period. |
 | `revokeDelegation` | parent | Cancel a kid's allowance and reclaim rent. |
 
 Reads use the package's `fetchDelegationsByDelegator` (parent dashboard) and
@@ -131,7 +132,7 @@ npm run build    # static build into dist/ (deploy anywhere)
 
 1. **Parent:** connect (devnet) → **Set up authority** → **Add** a kid (paste a pubkey, e.g. one of the
    demo kids, set $100/month).
-2. **Kid:** switch to that wallet → **Kid** tab → **Spend** $5 at Timmies.
+2. **Kid:** switch to that wallet → **Kid** tab → **Withdraw** $5 with a note like "lunch".
 3. **Parent:** watch *remaining this cycle* drop, then **Revoke** to cancel and reclaim rent.
 
 Funds only move on step 2 — never when you set up the allowance. That's the point.
@@ -141,7 +142,7 @@ Funds only move on step 2 — never when you set up the allowance. That's the po
 ## Canadian angle 🍁
 
 - CAD/USD display toggle (defaults to CAD).
-- Canadian demo merchants (Timmies, Indigo, a corner store).
+- Canadian framing throughout, CAD-first money display.
 - Built for **Superteam Canada**.
 
 ---

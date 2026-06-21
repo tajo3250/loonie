@@ -22,10 +22,10 @@ Show the landing hero. Pan over the three chips: *Funds stay put · Resets month
 **[0:30–0:50] Kid spends**
 - Switch to the **Kid** wallet, open the **Kid** tab.
 - "Here's my allowance: $100 this month, $100 left." 
-- Spend **$5** at **Timmies** → approve.
-> "The kid pulls the money — capped at what's left this cycle. Watch the remaining drop to $95."
+- **Withdraw $5** with a note like "lunch" → approve.
+> "The kid withdraws into their own wallet — capped at what's left this cycle. Watch the remaining drop to $95."
 - Open the **Activity** tab.
-> "And it's real — here's that pull on-chain, straight from devnet. Click through to the explorer."
+> "And it's real — here's that withdrawal on-chain with its note, straight from devnet. Click through to the explorer."
 
 **[0:50–1:05] Parent stays in control**
 - Back to the **Parent** tab. The kid's card now shows **$95 remaining**.

@@ -1,7 +1,7 @@
 import gsap from 'gsap'
-import { listAllowances, spend, summarizeDelegation } from '../lib/subscriptions.js'
+import { listAllowances, summarizeDelegation, withdraw } from '../lib/subscriptions.js'
 import { currencySymbol, formatMoney, periodLabel, toUsd, truncateAddress } from '../lib/format.js'
-import { MERCHANTS, explorerTx } from '../lib/config.js'
+import { explorerTx } from '../lib/config.js'
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 const el = sel => document.querySelector(sel)
@@ -42,10 +42,6 @@ async function loadAllowances(kid) {
 	}
 }
 
-function merchantOptions() {
-	return MERCHANTS.map(m => `<option value="${m.id}">${m.name}</option>`).join('')
-}
-
 function allowanceCard(d) {
 	const { amount, remaining, expired, periodLen } = summarizeDelegation(d)
 	const per = periodLabel(periodLen)
@@ -71,12 +67,12 @@ function allowanceCard(d) {
 		${
 			expired
 				? '<div class="mt-4 text-sm text-maple">This allowance has expired.</div>'
-				: `<form data-spend class="mt-4 grid grid-cols-[1fr_auto_auto] gap-2 items-end">
-			<label class="block"><span class="text-muted text-xs">Spend (${currencySymbol()})</span>
-				<input name="amount" type="number" min="1" step="1" value="5" class="mt-1 w-full rounded-xl border border-sand bg-cream px-3 py-2 text-sm focus:outline-none focus:border-loon focus:ring-2 focus:ring-loon/20" /></label>
-			<label class="block"><span class="text-muted text-xs">At</span>
-				<select name="merchant" class="mt-1 rounded-xl border border-sand bg-cream px-3 py-2 text-sm focus:outline-none focus:border-loon focus:ring-2 focus:ring-loon/20">${merchantOptions()}</select></label>
-			<button type="submit" class="rounded-full bg-maple hover:bg-maple-dark text-white font-semibold px-4 py-2.5 text-sm transition-colors disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-maple/40">Spend</button>
+				: `<form data-spend class="mt-4 grid grid-cols-[auto_1fr_auto] gap-2 items-end">
+			<label class="block"><span class="text-muted text-xs">Amount (${currencySymbol()})</span>
+				<input name="amount" type="number" min="1" step="1" value="5" class="mt-1 w-24 rounded-xl border border-sand bg-cream px-3 py-2 text-sm focus:outline-none focus:border-loon focus:ring-2 focus:ring-loon/20" /></label>
+			<label class="block"><span class="text-muted text-xs">What for?</span>
+				<input name="note" type="text" maxlength="60" placeholder="e.g. lunch" class="mt-1 w-full rounded-xl border border-sand bg-cream px-3 py-2 text-sm focus:outline-none focus:border-loon focus:ring-2 focus:ring-loon/20" /></label>
+			<button type="submit" class="rounded-full bg-maple hover:bg-maple-dark text-white font-semibold px-4 py-2.5 text-sm transition-colors disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-maple/40">Withdraw</button>
 			<p data-spend-msg class="col-span-3 text-sm" hidden></p>
 		</form>`
 		}`
@@ -92,7 +88,7 @@ function allowanceCard(d) {
 	}
 
 	const form = card.querySelector('[data-spend]')
-	if (form) form.addEventListener('submit', e => onSpend(e, d, card))
+	if (form) form.addEventListener('submit', e => onWithdraw(e, d, card))
 	return card
 }
 
@@ -108,7 +104,7 @@ function pop(card) {
 	gsap.fromTo(coin, { scale: 0.8 }, { scale: 1, duration: 0.5, ease: 'back.out(3)' })
 }
 
-async function onSpend(e, d, card) {
+async function onWithdraw(e, d, card) {
 	e.preventDefault()
 	if (!currentSigner) return
 
@@ -116,25 +112,25 @@ async function onSpend(e, d, card) {
 	const data = new FormData(form)
 	const entered = Number(data.get('amount'))
 	const amountUsdc = toUsd(entered)
+	const note = String(data.get('note') ?? '').trim()
 	const msg = form.querySelector('[data-spend-msg]')
 	const { remaining } = summarizeDelegation(d)
 
 	if (!(amountUsdc > 0)) return showMsg(msg, 'Enter an amount.', 'maple')
 	if (amountUsdc > remaining + 1e-9) return showMsg(msg, `Only ${formatMoney(remaining)} left this period.`, 'maple')
 
-	const merchant = MERCHANTS.find(m => m.id === data.get('merchant'))
 	const btn = form.querySelector('button')
 	const label = btn.textContent
 	btn.disabled = true
 	btn.textContent = 'Confirm…'
 	try {
-		const sig = await spend({ signer: currentSigner, delegation: d, merchant: merchant.address, amountUsdc })
+		const sig = await withdraw({ signer: currentSigner, delegation: d, amountUsdc, note })
 		console.log('transferRecurring:', explorerTx(sig))
-		showMsg(msg, `Sent ${formatMoney(amountUsdc)} to ${merchant.name}`, 'loon')
+		showMsg(msg, `Withdrew ${formatMoney(amountUsdc)}${note ? ` for ${note}` : ''}`, 'loon')
 		pop(card)
-		setTimeout(() => loadAllowances(currentSigner.address), 700)
+		loadAllowances(currentSigner.address)
 	} catch (err) {
-		console.error('Spend failed:', err)
+		console.error('Withdraw failed:', err)
 		showMsg(msg, err?.message ? String(err.message).slice(0, 140) : 'Transaction failed.', 'maple')
 	} finally {
 		btn.disabled = false
