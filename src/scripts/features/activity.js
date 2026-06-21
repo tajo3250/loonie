@@ -96,6 +96,8 @@ function pullRow(p) {
 	return a
 }
 
+let requestId = 0
+
 export async function refreshActivity(session) {
 	const connected = el('[data-activity="connected"]')
 	const disconnected = el('[data-activity="disconnected"]')
@@ -112,17 +114,19 @@ export async function refreshActivity(session) {
 	const list = el('[data-activity-list]')
 	const empty = el('[data-activity-empty]')
 	const loading = el('[data-activity-loading]')
-	list.innerHTML = ''
 	empty.hidden = true
 	loading.hidden = false
 
+	const reqId = ++requestId
 	let pulls = []
 	try {
 		pulls = await fetchPulls(session.account.address)
 	} catch (err) {
 		console.error('Activity load failed:', err)
 	}
+	if (reqId !== requestId) return
 
+	list.innerHTML = ''
 	loading.hidden = true
 	empty.hidden = pulls.length > 0
 	if (!pulls.length) {
