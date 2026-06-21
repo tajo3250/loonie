@@ -1,6 +1,6 @@
 import gsap from 'gsap'
 import { listAllowances, spend, summarizeDelegation } from '../lib/subscriptions.js'
-import { formatMoney, periodLabel, truncateAddress } from '../lib/format.js'
+import { currencySymbol, formatMoney, periodLabel, toUsd, truncateAddress } from '../lib/format.js'
 import { MERCHANTS, explorerTx } from '../lib/config.js'
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -72,7 +72,7 @@ function allowanceCard(d) {
 			expired
 				? '<div class="mt-4 text-sm text-maple">This allowance has expired.</div>'
 				: `<form data-spend class="mt-4 grid grid-cols-[1fr_auto_auto] gap-2 items-end">
-			<label class="block"><span class="text-muted text-xs">Spend</span>
+			<label class="block"><span class="text-muted text-xs">Spend (${currencySymbol()})</span>
 				<input name="amount" type="number" min="1" step="1" value="5" class="mt-1 w-full rounded-xl border border-sand bg-cream px-3 py-2 text-sm focus:outline-none focus:border-loon focus:ring-2 focus:ring-loon/20" /></label>
 			<label class="block"><span class="text-muted text-xs">At</span>
 				<select name="merchant" class="mt-1 rounded-xl border border-sand bg-cream px-3 py-2 text-sm focus:outline-none focus:border-loon focus:ring-2 focus:ring-loon/20">${merchantOptions()}</select></label>
@@ -114,7 +114,8 @@ async function onSpend(e, d, card) {
 
 	const form = e.currentTarget
 	const data = new FormData(form)
-	const amountUsdc = Number(data.get('amount'))
+	const entered = Number(data.get('amount'))
+	const amountUsdc = toUsd(entered)
 	const msg = form.querySelector('[data-spend-msg]')
 	const { remaining } = summarizeDelegation(d)
 

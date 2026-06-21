@@ -42,6 +42,14 @@ export function formatDate(unixSeconds) {
 	})
 }
 
+export function currencySymbol(currency = getCurrency()) {
+	return currency === 'CAD' ? 'CA$' : 'US$'
+}
+
+export function toUsd(displayAmount, currency = getCurrency()) {
+	return currency === 'CAD' ? displayAmount / USD_TO_CAD : displayAmount
+}
+
 export function formatMoney(amount, currency = getCurrency()) {
 	const value = currency === 'CAD' ? amount * USD_TO_CAD : amount
 	const symbol = currency === 'CAD' ? 'CA$' : 'US$'

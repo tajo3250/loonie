@@ -2,7 +2,7 @@ import gsap from 'gsap'
 import { address } from '@solana/kit'
 import { getSolBalance } from './lib/rpc.js'
 import { listSolanaWallets, onWalletsChange, connect, disconnect, createWalletSigner } from './lib/wallet.js'
-import { truncateAddress } from './lib/format.js'
+import { currencySymbol, truncateAddress } from './lib/format.js'
 import { initParentFeature, refreshParent } from './features/parent.js'
 import { refreshKid } from './features/kid.js'
 import { refreshActivity } from './features/activity.js'
@@ -181,6 +181,7 @@ function wireEvents() {
 	currencyBtn.addEventListener('click', toggleCurrency)
 	onCurrencyChange(currency => {
 		currencyBtn.textContent = currency
+		updateAmountCurrency()
 		refreshParent(session)
 		refreshKid(session)
 		refreshActivity(session)
@@ -192,8 +193,14 @@ function wireEvents() {
 	})
 }
 
+function updateAmountCurrency() {
+	const node = document.querySelector('[data-amount-cur]')
+	if (node) node.textContent = currencySymbol()
+}
+
 function init() {
 	wireEvents()
+	updateAmountCurrency()
 	initParentFeature()
 	refreshParent(session)
 	refreshKid(session)

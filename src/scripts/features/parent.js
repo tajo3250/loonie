@@ -6,10 +6,12 @@ import {
 	formatDate,
 	formatMoney,
 	periodLabel,
+	toUsd,
 	truncateAddress,
 	PERIOD_MONTH,
 	PERIOD_WEEK,
 } from '../lib/format.js'
+import { getNickname, setNickname } from '../lib/nicknames.js'
 import { explorerTx } from '../lib/config.js'
 
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -116,7 +118,7 @@ function kidCard(d) {
 					<svg class="w-5 h-5" aria-hidden="true"><use href="#i-user"/></svg>
 				</div>
 				<div class="min-w-0">
-					<div class="font-semibold truncate">${truncateAddress(kid)}</div>
+					<div class="flex items-center gap-1.5 min-w-0" data-name-wrap></div>
 					<div class="text-muted text-sm">${formatMoney(amount)} / ${per}</div>
 				</div>
 			</div>
@@ -135,6 +137,8 @@ function kidCard(d) {
 		</div>
 		<div class="mt-3 text-xs text-muted">${expired ? 'Expired' : `Resets ${formatDate(resetTs)} · Expires ${formatDate(expiry)}`}</div>`
 
+	renderName(card.querySelector('[data-name-wrap]'), kid)
+
 	const bar = card.querySelector('[data-bar]')
 	const remEl = card.querySelector('[data-remaining]')
 	if (reduced) {
@@ -147,6 +151,45 @@ function kidCard(d) {
 
 	card.querySelector('[data-revoke]').addEventListener('click', () => onRevoke(d, card))
 	return card
+}
+
+function renderName(wrap, kid) {
+	wrap.innerHTML = ''
+	const span = document.createElement('span')
+	span.className = 'font-semibold truncate'
+	span.title = kid
+	span.textContent = getNickname(kid) || truncateAddress(kid)
+	const btn = document.createElement('button')
+	btn.className = 'text-muted hover:text-loon shrink-0 transition-colors'
+	btn.setAttribute('aria-label', 'Rename kid')
+	btn.innerHTML = '<svg class="w-3.5 h-3.5" aria-hidden="true"><use href="#i-pencil"/></svg>'
+	btn.addEventListener('click', () => editName(wrap, kid))
+	wrap.append(span, btn)
+}
+
+function editName(wrap, kid) {
+	wrap.innerHTML = ''
+	const input = document.createElement('input')
+	input.className = 'font-semibold rounded-lg border border-loon bg-cream px-2 py-0.5 text-sm w-full focus:outline-none'
+	input.maxLength = 24
+	input.value = getNickname(kid)
+	input.placeholder = truncateAddress(kid)
+	const save = () => {
+		setNickname(kid, input.value)
+		renderName(wrap, kid)
+	}
+	input.addEventListener('keydown', e => {
+		if (e.key === 'Enter') {
+			e.preventDefault()
+			save()
+		} else if (e.key === 'Escape') {
+			renderName(wrap, kid)
+		}
+	})
+	input.addEventListener('blur', save)
+	wrap.append(input)
+	input.focus()
+	input.select()
 }
 
 async function onRevoke(d, card) {
@@ -229,8 +272,9 @@ function wireAddKid() {
 		} catch {
 			return showError('Enter a valid wallet address.')
 		}
-		const amountUsdc = Number(data.get('amount'))
-		if (!(amountUsdc > 0)) return showError('Amount must be greater than zero.')
+		const entered = Number(data.get('amount'))
+		if (!(entered > 0)) return showError('Amount must be greater than zero.')
+		const amountUsdc = toUsd(entered)
 		const periodSeconds = data.get('period') === 'week' ? PERIOD_WEEK : PERIOD_MONTH
 		const expiryTs = Math.floor(Date.now() / 1000) + 365 * 24 * 60 * 60
 

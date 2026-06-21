@@ -18,5 +18,20 @@ export async function sendWithSigner(signer, instructions) {
 		m => appendTransactionMessageInstructions(instructions, m)
 	)
 	const signature = await signAndSendTransactionMessageWithSigners(message)
-	return getBase58Decoder().decode(signature)
+	const sig = getBase58Decoder().decode(signature)
+	await confirmSignature(sig)
+	return sig
+}
+
+async function confirmSignature(signature, { timeoutMs = 25000, intervalMs = 800 } = {}) {
+	const deadline = Date.now() + timeoutMs
+	while (Date.now() < deadline) {
+		const { value } = await rpc.getSignatureStatuses([signature]).send()
+		const status = value[0]
+		if (status) {
+			if (status.err) throw new Error('Transaction failed on-chain.')
+			if (status.confirmationStatus === 'confirmed' || status.confirmationStatus === 'finalized') return
+		}
+		await new Promise(r => setTimeout(r, intervalMs))
+	}
 }
