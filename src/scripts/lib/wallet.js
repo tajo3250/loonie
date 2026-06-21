@@ -8,8 +8,17 @@ const SOLANA_SIGN_AND_SEND = 'solana:signAndSendTransaction'
 
 const { get, on } = getWallets()
 
+function walletRank(wallet) {
+	const name = wallet.name.toLowerCase()
+	if (name.includes('phantom')) return 0
+	if (name.includes('metamask')) return 2
+	return 1
+}
+
 export function listSolanaWallets() {
-	return get().filter(w => SOLANA_SIGN_AND_SEND in w.features && STANDARD_CONNECT in w.features)
+	return get()
+		.filter(w => SOLANA_SIGN_AND_SEND in w.features && STANDARD_CONNECT in w.features)
+		.sort((a, b) => walletRank(a) - walletRank(b))
 }
 
 export function onWalletsChange(callback) {

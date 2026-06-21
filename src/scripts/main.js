@@ -45,7 +45,11 @@ function reveal(targets, delay = 0) {
 	})
 }
 
+const revealedPanels = new Set()
+
 function revealPanel(role) {
+	if (revealedPanels.has(role)) return
+	revealedPanels.add(role)
 	const panel = document.querySelector(`[data-panel="${role}"]`)
 	if (panel) reveal(panel.querySelectorAll('[data-reveal]'))
 }
