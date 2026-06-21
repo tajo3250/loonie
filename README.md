@@ -7,7 +7,7 @@
 Built for the **[Superteam Canada](https://superteam.fun/)** bounty: *"Create a compelling
 technical demo showcasing innovative use cases for Solana Native Subscriptions and Allowances."*
 
-Runs entirely on **Solana devnet**.
+**▶ Live demo: [loonie.xtaiao.com](https://loonie.xtaiao.com/)** — connect a wallet on **Solana devnet** and try it.
 
 ---
 
