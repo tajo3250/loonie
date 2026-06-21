@@ -1,4 +1,5 @@
 import { address } from '@solana/kit'
+import { getTransferSolInstruction } from '@solana-program/system'
 import { findAssociatedTokenPda, getCreateAssociatedTokenIdempotentInstructionAsync } from '@solana-program/token-2022'
 import {
 	fetchDelegationsByDelegatee,
@@ -17,6 +18,9 @@ import { baseUnitsToUsdc, usdcToBaseUnits } from './format.js'
 import { MOCK_USDC_MINT, TOKEN_PROGRAM_ADDRESS } from './config.js'
 
 const MEMO_PROGRAM_ADDRESS = address('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr')
+
+// Parent prepays this much SOL to each kid for future withdrawal fees (~0.02 SOL).
+const KID_SOL_TOPUP_LAMPORTS = 20_000_000n
 
 function memoInstruction(text) {
 	return {
@@ -77,7 +81,7 @@ export async function addKid({ signer, kid, amountUsdc, periodSeconds, expiryTs 
 		nonce,
 	})
 
-	const ix = getCreateRecurringDelegationInstruction({
+	const delegationIx = getCreateRecurringDelegationInstruction({
 		delegator: signer,
 		subscriptionAuthority,
 		delegationAccount,
@@ -91,7 +95,22 @@ export async function addKid({ signer, kid, amountUsdc, periodSeconds, expiryTs 
 			expectedSubscriptionAuthorityInitId: auth.data.initId,
 		},
 	})
-	return sendWithSigner(signer, [ix])
+
+	// Parent prepays the kid's costs: create the kid's token account and send a little SOL
+	// for future withdrawal fees, so the kid never needs to fund their own wallet.
+	const createKidAta = await getCreateAssociatedTokenIdempotentInstructionAsync({
+		payer: signer,
+		mint: MOCK_USDC_MINT,
+		owner: kid,
+		tokenProgram: TOKEN_PROGRAM_ADDRESS,
+	})
+	const fundKidSol = getTransferSolInstruction({
+		source: signer,
+		destination: kid,
+		amount: KID_SOL_TOPUP_LAMPORTS,
+	})
+
+	return sendWithSigner(signer, [delegationIx, createKidAta, fundKidSol])
 }
 
 export async function listKids(owner) {
