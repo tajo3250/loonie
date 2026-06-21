@@ -7,6 +7,16 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const isWatch = process.argv.includes('--watch')
 
+function resolveRpcUrl() {
+	if (process.env.RPC_URL) return process.env.RPC_URL
+	const envPath = path.join(__dirname, '.env.local')
+	if (fs.existsSync(envPath)) {
+		const match = fs.readFileSync(envPath, 'utf-8').match(/^RPC_URL=(.*)$/m)
+		if (match) return match[1].trim()
+	}
+	return 'https://api.devnet.solana.com'
+}
+
 function buildHTML() {
 	const pagesDir = path.join(__dirname, 'src/pages')
 	const distDir = path.join(__dirname, 'dist')
@@ -35,6 +45,9 @@ async function buildJS() {
 			sourcemap: isWatch,
 			outfile: 'dist/js/main.js',
 			target: 'es2020',
+			define: {
+				__RPC_URL__: JSON.stringify(resolveRpcUrl()),
+			},
 		})
 		
 		if (isWatch) {

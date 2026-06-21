@@ -22,8 +22,9 @@ import {
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ENV_PATH = path.join(__dirname, '..', '.env.local')
 
-export const RPC_URL = process.env.RPC_URL ?? 'https://api.devnet.solana.com'
-export const RPC_SUBSCRIPTIONS_URL = process.env.RPC_SUBSCRIPTIONS_URL ?? 'wss://api.devnet.solana.com'
+const fileEnv = readEnv()
+export const RPC_URL = process.env.RPC_URL ?? fileEnv.RPC_URL ?? 'https://api.devnet.solana.com'
+export const RPC_SUBSCRIPTIONS_URL = process.env.RPC_SUBSCRIPTIONS_URL ?? fileEnv.RPC_SUBSCRIPTIONS_URL ?? 'wss://api.devnet.solana.com'
 
 export const rpc = createSolanaRpc(RPC_URL)
 export const rpcSubscriptions = createSolanaRpcSubscriptions(RPC_SUBSCRIPTIONS_URL)
